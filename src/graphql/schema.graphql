@@ -1,0 +1,161 @@
+# Scalars
+scalar Coordinates
+scalar Country
+scalar Date
+scalar DateTime
+scalar Duration
+
+# Enums
+enum LengthUnit {
+  METERS
+}
+
+enum DurationUnit {
+  SECONDS
+}
+
+# Interfaces
+
+interface Person {
+  name: String!
+  born: Date!
+  nationality: Country!
+}
+
+# Types
+type Driver implements Person {
+  id: ID!
+  name: String!
+  born: Date!
+  nationality: Country!
+  raceResults: [RaceResult!]!
+}
+
+type Lap {
+  id: ID!
+  raceResult: RaceResult!
+  number: Int!
+  time(unit: DurationUnit = SECONDS): Duration!
+}
+
+type Race {
+  id: ID!
+  name: String!
+  season: Season!
+  trackConfiguration: TrackConfiguration!
+  start: DateTime!
+  laps: Int!
+  results: [RaceResult!]!
+}
+
+type RaceResult {
+  id: ID!
+  race: Race!
+  driver: Driver!
+  team: Team!
+  number: Int!
+  classification: Int!
+  points: Float!
+  laps: [Lap!]!
+}
+
+type Season {
+  id: ID!
+  year: Int!
+  races: [Race!]!
+}
+
+type Team {
+  id: ID!
+  name: String!
+  country: Country!
+  previously: Team
+  drivers: [Driver!]!
+  members: [TeamMember!]!
+}
+
+type TeamMember implements Person {
+  id: ID!
+  name: String!
+  born: Date!
+  nationality: Country!
+  team: Team!
+  title: String!
+  start: Date!
+  end: Date
+}
+
+type Track {
+  id: ID!
+  name: String!
+  country: Country!
+  coordinates: Coordinates!
+  configurations: [TrackConfiguration!]
+}
+
+type TrackConfiguration {
+  id: ID!
+  track: Track!
+  length(unit: LengthUnit = METERS): Float!
+  turns: [TrackConfigurationTurn!]!
+}
+
+type TrackConfigurationTurn {
+  id: ID!
+  trackConfiguration: TrackConfiguration!
+  turn: Turn!
+  number: Int!
+}
+
+type Turn {
+  id: ID!
+  name: String!
+}
+
+
+# Queries
+type Query {
+  # Drivers
+  driver(id: ID!): Driver
+  drivers(ids: [ID!] = null): [Driver!]
+
+  # Laps
+  lap(id: ID!): Lap
+  laps(ids: [ID!] = null): [Lap!]
+
+  # Races
+  race(id: ID!): Race
+  races(ids: [ID!] = null): [Race!]
+
+  # Race results
+  raceResult(id: ID!): RaceResult
+  raceResults(ids: [ID!] = null): [RaceResult!]
+
+  # Seasons
+  season(id: ID!): Season
+  seasons(ids: [ID!] = null): [Season!]
+
+  # Team
+  team(id: ID!): Team
+  teams(ids: [ID!] = null): [Team!]
+
+  # Team members
+  teamMember(id: ID!): TeamMember
+  teamMembers(ids: [ID!] = null): [TeamMember!]
+
+  # Track
+  track(id: ID!): Track
+  track(ids: [ID!] = null): [Track!]
+
+  # Track configurations
+  trackConfiguration(id: ID!): TrackConfiguration
+  trackConfigurations(ids: [ID!] = null): [TrackConfiguration!]
+
+  # Track configuration turns
+  trackConfigurationTurn(id: ID!): TrackConfigurationTurn
+  trackConfigurationTurns(ids: [ID!] = null): [TrackConfigurationTurn!]
+
+  # Turns
+  turn(id: ID!): Turn
+  turns(ids: [ID!] = null): [Turn!]
+}
